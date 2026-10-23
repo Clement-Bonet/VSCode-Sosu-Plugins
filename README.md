@@ -106,3 +106,16 @@ a comment line marks columns with `^` and names the scopes they must have.
   hover with the types, renaming, diagnostics while typing.
 - Variables under their Sosu names in the debugger.
 - A formatter for `.ui.sosu` files, when `sosuc` has one.
+
+## License
+
+Licensed under either of
+
+- the Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE)), or
+- the MIT license ([LICENSE-MIT](LICENSE-MIT)),
+
+at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
+the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without
+any additional terms or conditions.

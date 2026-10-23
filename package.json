@@ -4,7 +4,7 @@
   "description": "The Sosu language: highlighting, building and running with sosuc, live diagnostics, formatting, debugging.",
   "version": "0.1.0",
   "publisher": "clement-bonet",
-  "license": "UNLICENSED",
+  "license": "MIT OR Apache-2.0",
   "private": true,
   "repository": {
     "type": "git",
