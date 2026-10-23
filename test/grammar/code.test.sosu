@@ -1,0 +1,51 @@
+// SYNTAX TEST "source.sosu" "Sosu code"
+import std.io;
+//     ^^^^^^ entity.name.namespace.sosu
+pub struct Point {
+//  ^^^^^^ storage.type.struct.sosu
+//         ^^^^^ entity.name.type.sosu
+    pub mut f32 x = 1.5;  // a comment
+//  ^^^ storage.modifier.sosu
+//          ^^^ support.type.primitive.sosu
+//                  ^^^ constant.numeric.float.sosu
+//                        ^^^^^^^^^^^^ comment.line.double-slash.sosu
+}
+    i32 add(i32 a, i32 b) requires a > 0 {
+//  ^^^ support.type.primitive.sosu
+//      ^^^ entity.name.function.sosu
+//                        ^^^^^^^^ keyword.other.contract.sosu
+        return a + b;
+//      ^^^^^^ keyword.control.sosu
+    }
+    void f() uses io {
+//       ^ entity.name.function.sosu
+        io.print("x = {}\n", 0xFF);
+//         ^^^^^ entity.name.function.call.sosu
+//                ^^^^^^^^^ string.quoted.double.sosu
+//                    ^^ constant.other.placeholder.sosu
+//                      ^^ constant.character.escape.sosu
+//                           ^^^^ constant.numeric.hex.sosu
+        Shape s = Circle(1.0);
+//      ^^^^^ entity.name.type.sosu
+//                ^^^^^^ entity.name.type.sosu
+        char c = '\u{e9}';
+//               ^^^^^^^^ string.quoted.single.sosu
+        auto p = q as? Button*;
+//      ^^^^ storage.type.sosu
+//                 ^^^ keyword.operator.cast.sosu
+        if (x == none) {
+//      ^^ keyword.control.sosu
+//            ^^ keyword.operator.comparison.sosu
+//               ^^^^ constant.language.none.sosu
+        } else if (ok(x)) {
+//        ^^^^ keyword.control.sosu
+//             ^^ keyword.control.sosu
+//                 ^^ support.function.builtin.sosu
+        }
+        mut Arena a = Arena.new(1 * KB);
+//          ^^^^^ support.type.primitive.sosu
+//                                  ^^ constant.language.size.sosu
+        /* a block */ x += 1;
+//      ^^^^^^^^^^^^^ comment.block.sosu
+//                      ^^ keyword.operator.assignment.compound.sosu
+    }
