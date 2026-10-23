@@ -104,6 +104,17 @@ function commandArgs(command, packageDir, options = {}) {
     return args;
 }
 
+// How the language client starts `sosuc lsp`: the compiler, with SOSU_HOME when it is set.
+function serverOptions(sosucPath, env) {
+    return { command: sosucPath, args: ['lsp'], options: { env } };
+}
+
+// The documents the language server handles: Sosu and interface files on disk.
+const DOCUMENT_SELECTOR = [
+    { scheme: 'file', language: 'sosu' },
+    { scheme: 'file', language: 'sosu-ui' },
+];
+
 module.exports = {
     findPackageDir,
     packageName,
@@ -112,4 +123,6 @@ module.exports = {
     diagnosticText,
     debuggerConfiguration,
     commandArgs,
+    serverOptions,
+    DOCUMENT_SELECTOR,
 };
