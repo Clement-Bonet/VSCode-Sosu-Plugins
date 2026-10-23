@@ -1,0 +1,159 @@
+{
+  "name": "sosu",
+  "displayName": "Sosu",
+  "description": "The Sosu language: highlighting, building and running with sosuc, live diagnostics, formatting, debugging.",
+  "version": "0.1.0",
+  "publisher": "clement-bonet",
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Clement-Bonet/VSCode-Sosu-Plugins.git"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Programming Languages", "Debuggers", "Formatters", "Snippets"],
+  "keywords": ["sosu", "sosuc"],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "workspaceContains:**/sosu.toml",
+    "onDebugResolve:sosu",
+    "onDebugDynamicConfigurations:sosu"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "sosu",
+        "aliases": ["Sosu", "sosu"],
+        "extensions": [".sosu"],
+        "configuration": "./language-configuration.json",
+        "icon": { "light": "./images/sosu-file.svg", "dark": "./images/sosu-file.svg" }
+      },
+      {
+        "id": "sosu-ui",
+        "aliases": ["Sosu interface", "sosu-ui"],
+        "extensions": [".ui.sosu"],
+        "configuration": "./language-configuration.json",
+        "icon": { "light": "./images/sosu-file.svg", "dark": "./images/sosu-file.svg" }
+      }
+    ],
+    "grammars": [
+      { "language": "sosu", "scopeName": "source.sosu", "path": "./syntaxes/sosu.tmLanguage.json" },
+      { "language": "sosu-ui", "scopeName": "source.sosu-ui", "path": "./syntaxes/sosu-ui.tmLanguage.json" }
+    ],
+    "snippets": [
+      { "language": "sosu", "path": "./snippets/sosu.json" },
+      { "language": "sosu-ui", "path": "./snippets/sosu-ui.json" }
+    ],
+    "commands": [
+      { "command": "sosu.run", "title": "Run the program", "category": "Sosu", "icon": "$(play)" },
+      { "command": "sosu.build", "title": "Build the program", "category": "Sosu", "icon": "$(tools)" },
+      { "command": "sosu.test", "title": "Run the tests", "category": "Sosu", "icon": "$(beaker)" },
+      { "command": "sosu.check", "title": "Check without compiling", "category": "Sosu", "icon": "$(check)" }
+    ],
+    "menus": {
+      "editor/title/run": [
+        { "command": "sosu.run", "when": "resourceLangId == sosu || resourceLangId == sosu-ui", "group": "navigation@0" }
+      ],
+      "explorer/context": [
+        { "command": "sosu.run", "when": "resourceFilename == sosu.toml", "group": "sosu@1" },
+        { "command": "sosu.test", "when": "resourceFilename == sosu.toml", "group": "sosu@2" },
+        { "command": "sosu.build", "when": "resourceFilename == sosu.toml", "group": "sosu@3" }
+      ]
+    },
+    "keybindings": [
+      { "command": "sosu.run", "key": "ctrl+f5", "mac": "cmd+f5", "when": "editorLangId == sosu || editorLangId == sosu-ui" }
+    ],
+    "configuration": {
+      "title": "Sosu",
+      "properties": {
+        "sosu.path": {
+          "type": "string",
+          "default": "sosuc",
+          "markdownDescription": "The compiler: `sosuc` in the `PATH`, or its full path (`D:/Sosu/build/sosuc.exe`)."
+        },
+        "sosu.home": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The Sosu installation, whose `lib` holds `core` and `std` (`SOSU_HOME`). Empty: next to `sosuc`."
+        },
+        "sosu.checkOnSave": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Check the package (`sosuc check`) when a file is opened or saved, and show its errors."
+        }
+      }
+    },
+    "taskDefinitions": [
+      {
+        "type": "sosu",
+        "required": ["command"],
+        "properties": {
+          "command": { "type": "string", "enum": ["run", "build", "test", "check"], "description": "The command of sosuc." },
+          "package": { "type": "string", "description": "The folder of the package (with its sosu.toml); default: the workspace folder." },
+          "release": { "type": "boolean", "description": "Optimized, without overflow checks nor contracts (--release)." }
+        }
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "sosuc",
+        "label": "Sosu compiler",
+        "owner": "sosu",
+        "source": "sosuc",
+        "fileLocation": ["autoDetect", "${cwd}"],
+        "pattern": [
+          { "regexp": "^(error|warning)\\[(E\\d{4})\\]: (.*)$", "severity": 1, "code": 2, "message": 3 },
+          { "regexp": "^\\s*--> (.*):(\\d+):(\\d+)$", "file": 1, "line": 2, "column": 3 }
+        ]
+      },
+      {
+        "name": "sosu-runtime",
+        "label": "Sosu run-time errors",
+        "owner": "sosu",
+        "source": "sosu",
+        "fileLocation": ["autoDetect", "${cwd}"],
+        "pattern": { "regexp": "^\\s*(.*\\.sosu):(\\d+):(\\d+): (.*)$", "file": 1, "line": 2, "column": 3, "message": 4 }
+      }
+    ],
+    "breakpoints": [{ "language": "sosu" }, { "language": "sosu-ui" }],
+    "debuggers": [
+      {
+        "type": "sosu",
+        "label": "Sosu",
+        "languages": ["sosu", "sosu-ui"],
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "package": { "type": "string", "description": "The folder of the package to debug (with its sosu.toml).", "default": "${workspaceFolder}" },
+              "args": { "type": "array", "items": { "type": "string" }, "description": "The arguments of the program.", "default": [] },
+              "cwd": { "type": "string", "description": "The folder the program runs in.", "default": "${workspaceFolder}" },
+              "env": { "type": "object", "description": "Environment variables of the program.", "default": {} },
+              "stopAtEntry": { "type": "boolean", "description": "Stop at the start of the program.", "default": false },
+              "release": { "type": "boolean", "description": "Build optimized (--release): harder to debug.", "default": false }
+            }
+          }
+        },
+        "initialConfigurations": [
+          { "type": "sosu", "request": "launch", "name": "Debug the Sosu program", "package": "${workspaceFolder}" }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Sosu: debug a program",
+            "description": "Builds the package with sosuc, then debugs it with the C debugger.",
+            "body": { "type": "sosu", "request": "launch", "name": "Debug the Sosu program", "package": "^\"\\${workspaceFolder}\"" }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node --test test/sosu.test.js && vscode-tmgrammar-test \"test/grammar/*.sosu\"",
+    "package": "vsce package --skip-license"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.2.1",
+    "vscode-tmgrammar-test": "^0.1.3"
+  }
+}

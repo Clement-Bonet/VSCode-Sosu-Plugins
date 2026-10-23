@@ -1,0 +1,32 @@
+{
+  "Window": {
+    "prefix": "window",
+    "description": "A window: its properties, then its nodes",
+    "body": [
+      "window ${1:Name}(${2:state.State* state}) {",
+      "\ttitle: \"${3:Title}\"",
+      "\twidth: ${4:400}",
+      "\theight: ${5:300}",
+      "",
+      "\tColumn(gap: 8, padding: 16) {",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ]
+  },
+  "Component": {
+    "prefix": "component",
+    "body": ["component ${1:Name}(${2:Item* item}) {", "\t$0", "}"]
+  },
+  "Column": { "prefix": "column", "body": ["Column(gap: ${1:8}) {", "\t$0", "}"] },
+  "Row": { "prefix": "row", "body": ["Row(gap: ${1:8}) {", "\t$0", "}"] },
+  "Text": { "prefix": "text", "body": ["Text(\"${1:text}\")"] },
+  "Button": { "prefix": "button", "body": ["Button(\"${1:OK}\", on_click: ${2:state.ok})"] },
+  "TextField": { "prefix": "textfield", "body": ["TextField(bind: ${1:state.name}, width: ${2:200})"] },
+  "Checkbox": { "prefix": "checkbox", "body": ["Checkbox(\"${1:label}\", bind: ${2:state.on})"] },
+  "Radio": { "prefix": "radio", "body": ["Radio(\"${1:label}\", bind: ${2:state.choice}, value: ${3:Variant})"] },
+  "List": {
+    "prefix": "list",
+    "body": ["List(width: ${1:300}, height: ${2:200}, selected: ${3:state.chosen}) {", "\tfor (${4:i32 i} in ${5:0..state.count}) {", "\t\t$0", "\t}", "}"]
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Sosu",
+  "scopeName": "source.sosu",
+  "patterns": [{ "include": "#code" }],
+  "repository": {
+    "code": {
+      "patterns": [
+        { "include": "#comments" },
+        { "include": "#strings" },
+        { "include": "#characters" },
+        { "include": "#numbers" },
+        { "include": "#import" },
+        { "include": "#extern" },
+        { "include": "#test" },
+        { "include": "#type-declaration" },
+        { "include": "#function-declaration" },
+        { "include": "#keywords" },
+        { "include": "#types" },
+        { "include": "#constants" },
+        { "include": "#builtins" },
+        { "include": "#calls" },
+        { "include": "#type-names" },
+        { "include": "#operators" },
+        { "include": "#punctuation" }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.sosu",
+          "begin": "//",
+          "beginCaptures": { "0": { "name": "punctuation.definition.comment.sosu" } },
+          "end": "$"
+        },
+        {
+          "name": "comment.block.sosu",
+          "begin": "/\\*",
+          "beginCaptures": { "0": { "name": "punctuation.definition.comment.begin.sosu" } },
+          "end": "\\*/",
+          "endCaptures": { "0": { "name": "punctuation.definition.comment.end.sosu" } }
+        }
+      ]
+    },
+    "escapes": {
+      "patterns": [
+        { "name": "constant.character.escape.sosu", "match": "\\\\(?:[ntr0\\\\'\"]|x[0-7][0-9A-Fa-f]|u\\{[0-9A-Fa-f]{1,6}\\})" },
+        { "name": "invalid.illegal.escape.sosu", "match": "\\\\." }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.sosu",
+      "begin": "\"",
+      "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.sosu" } },
+      "end": "\"|$",
+      "endCaptures": { "0": { "name": "punctuation.definition.string.end.sosu" } },
+      "patterns": [
+        { "include": "#escapes" },
+        { "name": "constant.other.placeholder.sosu", "match": "\\{\\}" }
+      ]
+    },
+    "characters": {
+      "name": "string.quoted.single.sosu",
+      "match": "'(?:\\\\(?:[ntr0\\\\'\"]|x[0-7][0-9A-Fa-f]|u\\{[0-9A-Fa-f]{1,6}\\})|[^'\\\\])'",
+      "captures": { "0": { "patterns": [{ "include": "#escapes" }] } }
+    },
+    "numbers": {
+      "patterns": [
+        { "name": "constant.numeric.hex.sosu", "match": "\\b0x[0-9A-Fa-f]+\\b" },
+        { "name": "constant.numeric.binary.sosu", "match": "\\b0b[01]+\\b" },
+        { "name": "constant.numeric.float.sosu", "match": "\\b[0-9]+\\.[0-9]+(?:e[+-]?[0-9]+)?\\b" },
+        { "name": "constant.numeric.float.sosu", "match": "\\b[0-9]+e[+-]?[0-9]+\\b" },
+        { "name": "constant.numeric.integer.sosu", "match": "\\b[0-9]+\\b" }
+      ]
+    },
+    "import": {
+      "match": "\\b(import)\\s+([A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*)",
+      "captures": {
+        "1": { "name": "keyword.control.import.sosu" },
+        "2": { "name": "entity.name.namespace.sosu" }
+      }
+    },
+    "extern": {
+      "match": "\\b(extern)\\s+(\"[^\"]*\")",
+      "captures": {
+        "1": { "name": "storage.modifier.extern.sosu" },
+        "2": { "name": "string.quoted.double.sosu" }
+      }
+    },
+    "test": {
+      "match": "^\\s*(test)\\s+(?=\")",
+      "captures": { "1": { "name": "keyword.other.test.sosu" } }
+    },
+    "type-declaration": {
+      "match": "\\b(struct|class|interface|enum)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "storage.type.$1.sosu" },
+        "2": { "name": "entity.name.type.sosu" }
+      }
+    },
+    "function-declaration": {
+      "comment": "`Type name(` at the start of a line, or after `pub`, `virtual`, `override`, `unsafe`: a function or a method",
+      "match": "^\\s*((?:(?:pub|virtual|override|unsafe)\\s+)*)(?!(?:return|if|else|while|for|match|defer|try|in|as|import|extern|test)\\b)([A-Za-z_][A-Za-z0-9_.]*(?:\\[[0-9]*\\]|[*?])*(?:![A-Za-z_][A-Za-z0-9_.]*)?)\\s+(?!(?:if|while|for|match|in|as)\\b)([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()",
+      "captures": {
+        "1": { "patterns": [{ "include": "#keywords" }] },
+        "2": { "patterns": [{ "include": "#types" }, { "include": "#type-names" }, { "include": "#punctuation" }] },
+        "3": { "name": "entity.name.function.sosu" }
+      }
+    },
+    "keywords": {
+      "patterns": [
+        { "name": "keyword.control.sosu", "match": "\\b(if|else|while|for|in|break|continue|return|match|try|defer)\\b" },
+        { "name": "keyword.other.contract.sosu", "match": "\\b(requires|ensures|uses)\\b" },
+        { "name": "storage.modifier.sosu", "match": "\\b(pub|mut|virtual|override|unsafe|extern)\\b" },
+        { "name": "storage.type.sosu", "match": "\\b(struct|class|interface|enum|auto|fn)\\b" },
+        { "name": "keyword.operator.cast.sosu", "match": "\\bas\\?|\\bas\\b" },
+        { "name": "variable.language.sosu", "match": "\\b(self|base)\\b" },
+        { "name": "keyword.other.reserved.sosu", "match": "\\bcomptime\\b" }
+      ]
+    },
+    "types": {
+      "name": "support.type.primitive.sosu",
+      "match": "\\b(i8|i16|i32|i64|isize|u8|u16|u32|u64|usize|f32|f64|bool|char|str|void|Arena)\\b"
+    },
+    "constants": {
+      "patterns": [
+        { "name": "constant.language.boolean.sosu", "match": "\\b(true|false)\\b" },
+        { "name": "constant.language.none.sosu", "match": "\\bnone\\b" },
+        { "name": "constant.language.size.sosu", "match": "\\b(KB|MB|GB)\\b" }
+      ]
+    },
+    "builtins": {
+      "name": "support.function.builtin.sosu",
+      "match": "\\b(some|ok|err|assert|min|max|abs|wrapping_add|wrapping_sub|wrapping_mul)\\b(?=\\s*\\()"
+    },
+    "calls": {
+      "match": "\\b([a-z_][A-Za-z0-9_]*)\\s*(?=\\()",
+      "captures": { "1": { "name": "entity.name.function.call.sosu" } }
+    },
+    "type-names": {
+      "comment": "A name starting with a capital letter: a type, or a variant of an enum",
+      "name": "entity.name.type.sosu",
+      "match": "\\b[A-Z][A-Za-z0-9_]*\\b"
+    },
+    "operators": {
+      "patterns": [
+        { "name": "keyword.operator.arrow.sosu", "match": "=>|->" },
+        { "name": "keyword.operator.range.sosu", "match": "\\.\\.=?" },
+        { "name": "keyword.operator.assignment.compound.sosu", "match": "(?:\\+|-|\\*|/|%|&|\\||\\^|<<|>>)=" },
+        { "name": "keyword.operator.comparison.sosu", "match": "==|!=|<=|>=|<|>" },
+        { "name": "keyword.operator.logical.sosu", "match": "&&|\\|\\||!" },
+        { "name": "keyword.operator.bitwise.sosu", "match": "<<|>>|&|\\||\\^|~" },
+        { "name": "keyword.operator.assignment.sosu", "match": "=" },
+        { "name": "keyword.operator.arithmetic.sosu", "match": "\\+|-|\\*|/|%" },
+        { "name": "keyword.operator.ternary.sosu", "match": "\\?|:" }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "name": "punctuation.terminator.statement.sosu", "match": ";" },
+        { "name": "punctuation.separator.comma.sosu", "match": "," },
+        { "name": "punctuation.accessor.sosu", "match": "\\." }
+      ]
+    }
+  }
+}
