@@ -1,0 +1,65 @@
+name: Release
+
+# Builds the .vsix and attaches it to a GitHub Release, where it is downloaded from the Releases
+# page (release assets do not count in the storage of the artifacts of the CI).
+# - A tag `v<version>` (git tag v0.2.0, git push origin v0.2.0): the release of that version.
+#   The tag must match the `version` of package.json.
+# - By hand (Actions > Release > Run workflow, on a branch): a pre-release
+#   `v<version>-build.<run>` of the last commit of the branch, to try it.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # to create the release and its tag
+
+jobs:
+  release:
+    name: Build and publish the .vsix
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tests (logic and highlighting)
+        run: npm test
+      - name: Package
+        run: npm run package
+
+      - name: The name of the release
+        id: names
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+              echo "::error::The tag $GITHUB_REF_NAME does not match the version $version of package.json: tag v$version instead."
+              exit 1
+            fi
+            echo "tag=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=v$version-build.$GITHUB_RUN_NUMBER" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.names.outputs.tag }}
+          PRERELEASE: ${{ steps.names.outputs.prerelease }}
+        run: |
+          flags=(--title "Sosu for VS Code $TAG" --generate-notes --target "$GITHUB_SHA")
+          if [ "$PRERELEASE" = "true" ]; then
+            flags+=(--prerelease)
+          fi
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" ./*.vsix --clobber  # run again: the .vsix is replaced
+          else
+            gh release create "$TAG" ./*.vsix "${flags[@]}"
+          fi
+          echo "Release $TAG: $(gh release view "$TAG" --json url --jq .url)" >> "$GITHUB_STEP_SUMMARY"
