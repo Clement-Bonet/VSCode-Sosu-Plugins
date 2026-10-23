@@ -1,0 +1,28 @@
+// SYNTAX TEST "source.sosu-ui" "Sosu interface"
+import app.state;
+window Greeter(state.Form* form) {
+//     ^^^^^^^ entity.name.function.sosu-ui
+    title: "Hello"
+//  ^^^^^ entity.other.attribute-name.sosu-ui
+//         ^^^^^^^ string.quoted.double.sosu
+    Column(gap: 8) {
+//  ^^^^^^ entity.name.tag.sosu-ui
+//         ^^^ entity.other.attribute-name.sosu-ui
+//              ^ constant.numeric.integer.sosu
+        Button("OK", on_click: form.ok, enabled: a ? b : c)
+//      ^^^^^^ entity.name.tag.sosu-ui
+//                   ^^^^^^^^ entity.other.attribute-name.sosu-ui
+//                                      ^^^^^^^ entity.other.attribute-name.sosu-ui
+//                                                   ^ - entity.other.attribute-name.sosu-ui
+        for (i32 i in 0..form.count) {
+//      ^^^ keyword.control.sosu
+//                     ^^ keyword.operator.range.sosu
+            tasks.TaskRow(t)
+//          ^^^^^^ entity.name.namespace.sosu-ui
+//                ^^^^^^^ entity.name.tag.sosu-ui
+        }
+        List {
+//      ^^^^ entity.name.tag.sosu-ui
+        }
+    }
+}

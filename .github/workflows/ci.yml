@@ -1,0 +1,30 @@
+name: CI
+
+# main: stable; dev: integration; feature/*: one branch per feature, merged into dev
+# through a pull request. Pull requests are checked before they are merged.
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  extension:
+    name: Tests and package
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tests (logic and highlighting)
+        run: npm test
+      - name: Package
+        run: npm run package
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sosu-vsix
+          path: "*.vsix"

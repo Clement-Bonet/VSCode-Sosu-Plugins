@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The mountain of the Sosu logo (docs/Sosu.png of the Sosu repository), white on its blue -->
+  <rect x="1" y="1" width="30" height="30" rx="6" fill="#0d2b6b"/>
+  <g transform="translate(3 9.25) scale(0.03994) translate(-11 -50)">
+    <polygon fill="#ffffff" points="11,388 188,170 217,170 277,250 420,50 452,50 662,362 578,362 436,160 247,322 247,388 213,388 238,318 202,262 86,388"/>
+  </g>
+</svg>

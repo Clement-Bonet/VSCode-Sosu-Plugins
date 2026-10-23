@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Sosu interface",
+  "scopeName": "source.sosu-ui",
+  "patterns": [
+    { "include": "source.sosu#comments" },
+    { "include": "#view" },
+    { "include": "#style" },
+    { "include": "#node" },
+    { "include": "#property" },
+    { "include": "source.sosu#code" }
+  ],
+  "repository": {
+    "view": {
+      "match": "\\b(window|component)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "storage.type.view.sosu-ui" },
+        "2": { "name": "entity.name.function.sosu-ui" }
+      }
+    },
+    "style": {
+      "match": "\\b(style|theme)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "storage.type.style.sosu-ui" },
+        "2": { "name": "entity.name.type.sosu-ui" }
+      }
+    },
+    "node": {
+      "comment": "A widget or a component: a capitalized name followed by `(` or `{`",
+      "match": "\\b((?:[a-z_][A-Za-z0-9_]*\\.)*)([A-Z][A-Za-z0-9_]*)\\s*(?=[({])",
+      "captures": {
+        "1": { "name": "entity.name.namespace.sosu-ui" },
+        "2": { "name": "entity.name.tag.sosu-ui" }
+      }
+    },
+    "property": {
+      "comment": "`name:` at the start of a line or of an argument: not the `:` of a ternary",
+      "match": "(?:^|(?<=[(,]))\\s*([a-z_][A-Za-z0-9_]*)\\s*(:)(?!:)",
+      "captures": {
+        "1": { "name": "entity.other.attribute-name.sosu-ui" },
+        "2": { "name": "punctuation.separator.key-value.sosu-ui" }
+      }
+    }
+  }
+}
