@@ -90,3 +90,13 @@ test('every command of the manifest is contributed with a title', () => {
     const commands = pkg.contributes.commands.map((c) => c.command).sort();
     assert.deepStrictEqual(commands, ['sosu.build', 'sosu.check', 'sosu.run', 'sosu.test']);
 });
+
+test('the language server is `sosuc lsp`, for Sosu and interface files on disk', () => {
+    const env = { SOSU_HOME: '/opt/sosu' };
+    assert.deepStrictEqual(sosu.serverOptions('/bin/sosuc', env), { command: '/bin/sosuc', args: ['lsp'], options: { env } });
+    assert.deepStrictEqual(sosu.DOCUMENT_SELECTOR.map((s) => s.language), ['sosu', 'sosu-ui']);
+    assert.ok(sosu.DOCUMENT_SELECTOR.every((s) => s.scheme === 'file'));
+    const lsp = pkg.contributes.configuration.properties['sosu.lsp'];
+    assert.strictEqual(lsp.default, true);
+    assert.ok(pkg.dependencies['vscode-languageclient'], 'a runtime dependency, packaged in the .vsix');
+});

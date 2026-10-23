@@ -1,7 +1,7 @@
 {
   "name": "sosu",
   "displayName": "Sosu",
-  "description": "The Sosu language: highlighting, building and running with sosuc, live diagnostics, formatting, debugging.",
+  "description": "The Sosu language: highlighting, errors while typing, hover, go to definition and completion (sosuc lsp), building and running, formatting, debugging.",
   "version": "0.1.0",
   "publisher": "clement-bonet",
   "icon": "images/icon.png",
@@ -79,10 +79,15 @@
           "default": "",
           "markdownDescription": "The Sosu installation, whose `lib` holds `core` and `std` (`SOSU_HOME`). Empty: next to `sosuc`."
         },
+        "sosu.lsp": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Use the language server of the compiler (`sosuc lsp`): errors while typing, types on hover, go to definition, completion. Off, or when `sosuc` has no language server: `#sosu.checkOnSave#`."
+        },
         "sosu.checkOnSave": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Check the package (`sosuc check`) when a file is opened or saved, and show its errors."
+          "markdownDescription": "Without the language server: check the package (`sosuc check`) when a file is opened or saved, and show its errors."
         }
       }
     },
@@ -152,6 +157,9 @@
   "scripts": {
     "test": "node --test test/sosu.test.js && vscode-tmgrammar-test \"test/grammar/*.sosu\"",
     "package": "vsce package --skip-license"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.2.1",

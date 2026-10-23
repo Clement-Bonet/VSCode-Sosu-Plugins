@@ -15,8 +15,13 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
   package of the file being edited: the nearest folder up with a `sosu.toml`.
 - **Tasks**: the same commands as tasks of type `sosu` (Terminal > Run Task), with the problem
   matcher `$sosuc`: the errors of the compiler go to the Problems panel.
-- **Live diagnostics**: when a Sosu file is opened or saved, its package is checked
-  (`sosuc check --format=json`), and the errors are underlined, with their help.
+- **Language server** (`sosuc lsp`): the errors while typing, underlined with their help; the type
+  of what is under the mouse (signatures of functions and methods, types of variables and
+  fields); go to definition (`F12`, `Ctrl+click`); completion of the members after `.` and of the
+  names in scope. It works on the package of the file, with the text of the open files.
+- **Check on save**, without the language server (setting `sosu.lsp` off, or a `sosuc` without
+  it): when a Sosu file is opened or saved, its package is checked (`sosuc check --format=json`),
+  and the errors are underlined.
 - **Formatting**: Format Document (`Shift+Alt+F`) runs `sosuc fmt` on `.sosu` files.
 - **Debugging**: `F5` builds the package, then debugs the program with the C debugger of
   VS Code. The C that `sosuc` generates keeps `#line` directives to the `.sosu` files: breakpoints
@@ -61,7 +66,8 @@ the CI, they do not count in the storage quota of the account.
 |---|---|---|
 | `sosu.path` | `sosuc` | the compiler |
 | `sosu.home` | (empty) | the Sosu installation whose `lib` holds `core` and `std` (`SOSU_HOME`); empty: next to `sosuc` |
-| `sosu.checkOnSave` | `true` | check the package when a file is opened or saved |
+| `sosu.lsp` | `true` | use the language server of `sosuc` (`sosuc lsp`) |
+| `sosu.checkOnSave` | `true` | without the language server: check the package when a file is opened or saved |
 
 ## Debugging
 
@@ -90,7 +96,9 @@ For now, the debugger shows the variables under their C names: `v_count` for a v
 ## Development
 
 The extension is plain JavaScript, without a build step: `src/extension.js` (VS Code), and
-`src/sosu.js` (what does not need VS Code: packages, diagnostics, debugger configurations).
+`src/sosu.js` (what does not need VS Code: packages, diagnostics, debugger configurations, the
+language server command). Its one runtime dependency, `vscode-languageclient`, is packaged in the
+`.vsix` from `node_modules`.
 
 ```sh
 npm install
@@ -131,8 +139,7 @@ a comment line marks columns with `^` and names the scopes they must have.
 
 ## Next
 
-- A language server in `sosuc` (`sosuc lsp`, spec §11.4 of Sosu): completion, go to definition,
-  hover with the types, renaming, diagnostics while typing.
+- In the language server: renaming, the references of a name, signature help.
 - Variables under their Sosu names in the debugger.
 - A formatter for `.ui.sosu` files, when `sosuc` has one.
 
