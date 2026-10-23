@@ -31,13 +31,29 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
 
 ## Installing
 
-The extension is not on the Marketplace. Each run of the CI builds `sosu-<version>.vsix` (the
-artifact `sosu-vsix` of the run); `npm run package` builds it too. Then, in VS Code:
-Extensions > `...` > Install from VSIX, or:
+The extension is not on the Marketplace. Its `.vsix` comes from the Releases page of the
+repository (see [Releases](#releases)), from the artifact `sosu-vsix` of a run of the CI, from
+`npm run package`, or from Docker without Node.js (see [Development](#development)). Then, in
+VS Code: Extensions > `...` > Install from VSIX, or:
 
 ```sh
 code --install-extension sosu-0.1.0.vsix
 ```
+
+## Releases
+
+The workflow `Release` (`.github/workflows/release.yml`) builds the `.vsix`, after the tests, and
+attaches it to a GitHub Release. Its assets are downloaded from the Releases page, or with
+`gh release download <tag> --repo Clement-Bonet/VSCode-Sosu-Plugins`; unlike the artifacts of
+the CI, they do not count in the storage quota of the account.
+
+- **A version**: set `version` in `package.json`, merge it, then push the tag of that version:
+  `git tag v0.2.0` and `git push origin v0.2.0`. The release `v0.2.0` is created, with its notes
+  generated from the pull requests merged since the previous one. A tag that does not match the
+  version of `package.json` stops the workflow.
+- **To try a branch**: Actions > Release > Run workflow, then pick the branch. It publishes a
+  pre-release `v<version>-build.<run>` of its last commit. GitHub shows this button once the
+  workflow is on the default branch, `main`.
 
 ## Settings
 
@@ -83,11 +99,24 @@ npm run package   # sosu-<version>.vsix
 ```
 
 To try it in VS Code: open this folder and run "Run Extension" (F5), or install the `.vsix`.
-Without Node.js installed, the same commands run in Docker:
+Without Node.js installed, the same commands run in Docker, from the folder of the extension.
+Docker Desktop must be running (on Windows, its whale in the taskbar): otherwise `docker` answers
+"failed to connect to the docker API". The command depends on the shell:
+
+```powershell
+# PowerShell (Windows)
+docker run --rm -v "${PWD}:/ext" -w /ext node:22 bash -c "npm ci && npm test && npm run package"
+```
 
 ```sh
-docker run --rm -v "$PWD:/ext" -w /ext node:22 bash -c "npm install && npm test && npm run package"
+# Git Bash (Windows): MSYS must not rewrite the paths, and `pwd -W` gives D:/...
+MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/ext" -w /ext node:22 bash -c "npm ci && npm test && npm run package"
+
+# Linux, macOS
+docker run --rm -v "$PWD:/ext" -w /ext node:22 bash -c "npm ci && npm test && npm run package"
 ```
+
+`sosu-<version>.vsix` is then in the folder of the extension.
 
 The highlighting tests (`test/grammar/*.sosu`) use
 [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test): under a line of code,
