@@ -107,6 +107,7 @@ const pending = new Map();
 function scheduleCheck(document) {
     if (!LANGUAGES.includes(document.languageId) || document.uri.scheme !== 'file') return;
     if (!settings().get('checkOnSave')) return;
+    if (client) return;  // the language server checks while typing
     const dir = sosu.findPackageDir(document.uri.fsPath);
     if (!dir) return;
     clearTimeout(pending.get(dir));
@@ -114,6 +115,48 @@ function scheduleCheck(document) {
         pending.delete(dir);
         checkPackage(dir);
     }, 200));
+}
+
+// ---- The language server: `sosuc lsp` ----
+
+let client = null;  // the running language client, or null (then: check on save)
+
+async function startLanguageServer() {
+    if (!settings().get('lsp')) return;
+    const { LanguageClient } = require('vscode-languageclient/node');
+    const candidate = new LanguageClient(
+        'sosu',
+        'Sosu language server',
+        sosu.serverOptions(sosucPath(), sosucEnv()),
+        { documentSelector: sosu.DOCUMENT_SELECTOR, outputChannel: output },
+    );
+    try {
+        await candidate.start();
+        client = candidate;
+        // its diagnostics replace those of `sosuc check`
+        diagnostics.clear();
+        reported.clear();
+    } catch (error) {
+        // sosuc missing, or older than its language server: check on save instead
+        output.appendLine(`The language server did not start (${error && error.message ? error.message : error}): the package is checked on save.`);
+        try {
+            await candidate.dispose();
+        } catch (ignored) {
+            // it never ran
+        }
+    }
+}
+
+async function stopLanguageServer() {
+    const running = client;
+    client = null;
+    if (running) await running.stop();
+}
+
+async function restartLanguageServer() {
+    await stopLanguageServer();
+    await startLanguageServer();
+    if (!client) vscode.workspace.textDocuments.forEach(scheduleCheck);
 }
 
 // ---- Commands and tasks ----
@@ -243,7 +286,7 @@ const debugProvider = {
             return undefined;
         }
         if (built.code !== 0) {
-            await checkPackage(dir);
+            if (!client) await checkPackage(dir);
             output.appendLine(built.stderr);
             vscode.window.showErrorMessage(`The build of ${name} failed: see the Problems panel.`, 'Show problems')
                 .then((choice) => { if (choice) vscode.commands.executeCommand('workbench.actions.view.problems'); });
@@ -268,10 +311,17 @@ function activate(context) {
         vscode.debug.registerDebugConfigurationProvider('sosu', debugProvider),
         vscode.workspace.onDidSaveTextDocument(scheduleCheck),
         vscode.workspace.onDidOpenTextDocument(scheduleCheck),
+        vscode.workspace.onDidChangeConfiguration((event) => {
+            if (['sosu.lsp', 'sosu.path', 'sosu.home'].some((key) => event.affectsConfiguration(key))) restartLanguageServer();
+        }),
     );
-    vscode.workspace.textDocuments.forEach(scheduleCheck);
+    startLanguageServer().then(() => {
+        if (!client) vscode.workspace.textDocuments.forEach(scheduleCheck);
+    });
 }
 
-function deactivate() {}
+function deactivate() {
+    return stopLanguageServer();
+}
 
 module.exports = { activate, deactivate };
