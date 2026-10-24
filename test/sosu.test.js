@@ -15,7 +15,7 @@ test('the package of a file is the nearest folder up with a sosu.toml', () => {
 });
 
 test('the name of a package is read from its [package] section', () => {
-    const toml = '# a comment\n[package]\nname = "form"  # the name\nversion = "0.1.0"\n\n[dependencies]\nname = "other"\n';
+    const toml = '# a comment\n[package]\nname = "form"  # the name\nversion = "0.1.1"\n\n[dependencies]\nname = "other"\n';
     assert.strictEqual(sosu.packageName(toml), 'form');
     assert.strictEqual(sosu.packageName('[dependencies]\nname = "x"\n'), null);
     assert.strictEqual(sosu.packageName('[package]\r\nname = "crlf"\r\n'), 'crlf');

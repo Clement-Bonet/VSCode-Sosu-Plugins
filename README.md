@@ -42,7 +42,7 @@ repository (see [Releases](#releases)), from the artifact `sosu-vsix` of a run o
 VS Code: Extensions > `...` > Install from VSIX, or:
 
 ```sh
-code --install-extension sosu-0.1.0.vsix
+code --install-extension sosu-0.1.1.vsix
 ```
 
 ## Releases
