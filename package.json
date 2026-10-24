@@ -2,7 +2,7 @@
   "name": "sosu",
   "displayName": "Sosu",
   "description": "The Sosu language: highlighting, errors while typing, hover, go to definition and completion (sosuc lsp), building and running, formatting, debugging.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "clement-bonet",
   "icon": "images/icon.png",
   "license": "MIT OR Apache-2.0",
