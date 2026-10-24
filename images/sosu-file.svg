@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- The mountain of the Sosu logo (docs/Sosu.png of the Sosu repository), white on its blue -->
-  <rect x="1" y="1" width="30" height="30" rx="6" fill="#0d2b6b"/>
-  <g transform="translate(3 9.25) scale(0.03994) translate(-11 -50)">
-    <polygon fill="#ffffff" points="11,388 188,170 217,170 277,250 420,50 452,50 662,362 578,362 436,160 247,322 247,388 213,388 238,318 202,262 86,388"/>
+  <!-- The Sosu logo (docs/sosu.svg of the Sosu repository): its mountains, white on its blue -->
+  <rect x="1" y="1" width="30" height="30" rx="6" fill="#001E36"/>
+  <g transform="translate(2.55 6.3) scale(0.036) translate(-138 -242)">
+    <path d="M 885,757 884,752 633,253 628,247 621,243 610,242 604,244 595,252 462,499 388,363 380,356 373,354 363,355 357,358 352,363 143,744 138,755 138,765 144,776 152,781 157,782 330,782 345,777 354,769 457,578 462,571 565,760 574,772 584,778 591,780 868,780 878,775 882,770 Z M 370,401 442,533 442,536 334,737 327,748 181,748 180,747 Z M 613,291 615,292 785,631 843,744 842,747 598,747 591,737 481,535 Z" fill="#F8F8FC" fill-rule="evenodd"/>
   </g>
 </svg>
