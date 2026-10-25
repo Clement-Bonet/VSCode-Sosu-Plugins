@@ -37,11 +37,19 @@
         "extensions": [".ui.sosu"],
         "configuration": "./language-configuration.json",
         "icon": { "light": "./images/sosu-file.svg", "dark": "./images/sosu-file.svg" }
+      },
+      {
+        "id": "sosu-locale",
+        "aliases": ["Sosu catalog", "sosu-locale"],
+        "filenamePatterns": ["*.locale.*.sosu"],
+        "configuration": "./locale-configuration.json",
+        "icon": { "light": "./images/sosu-file.svg", "dark": "./images/sosu-file.svg" }
       }
     ],
     "grammars": [
       { "language": "sosu", "scopeName": "source.sosu", "path": "./syntaxes/sosu.tmLanguage.json" },
-      { "language": "sosu-ui", "scopeName": "source.sosu-ui", "path": "./syntaxes/sosu-ui.tmLanguage.json" }
+      { "language": "sosu-ui", "scopeName": "source.sosu-ui", "path": "./syntaxes/sosu-ui.tmLanguage.json" },
+      { "language": "sosu-locale", "scopeName": "source.sosu-locale", "path": "./syntaxes/sosu-locale.tmLanguage.json" }
     ],
     "snippets": [
       { "language": "sosu", "path": "./snippets/sosu.json" },

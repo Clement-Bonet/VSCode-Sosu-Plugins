@@ -5,7 +5,9 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
 ## Features
 
 - **Highlighting** of `.sosu` files (language `sosu`) and of `.ui.sosu` interface files (language
-  `sosu-ui`: windows, components, nodes and their properties, with Sosu expressions inside).
+  `sosu-ui`: windows, components, nodes and their properties, with Sosu expressions inside), and
+  of the catalogs of translations `<name>.locale.<language>.sosu` (language `sosu-locale`: the
+  content of gettext, its keywords, comments, escapes and `{values}`; no diagnostics in them).
 - **Editing**: comments (`Ctrl+/`), brackets and quotes closed as you type, indentation, folding
   (`// region` ... `// endregion`), and snippets (`main`, `fn`, `fnc`, `struct`, `class`, `enum`,
   `match`, `for`, `arena`, `test`, `extern`; `window`, `column`, `button`, `textfield`, `radio`,
