@@ -1,0 +1,17 @@
+# SYNTAX TEST "source.sosu-locale" "A catalog of translations"
+#: src/screen.ui.sosu:12
+# <------------------------ comment.line.reference.sosu-locale
+#, fuzzy
+# <------- comment.line.flags.sosu-locale
+msgctxt "verb"
+# <------- keyword.other.msgctxt.sosu-locale
+#       ^^^^^^ string.quoted.double.sosu-locale
+msgid "{count} file"
+# <----- keyword.other.msgid.sosu-locale
+#      ^^^^^^^ variable.other.placeholder.sosu-locale
+msgid_plural "{count} files"
+# <------------ keyword.other.msgid.sosu-locale
+msgstr[1] "{count} fichiers\n"
+# <------ keyword.other.msgstr.sosu-locale
+#      ^ constant.numeric.integer.sosu-locale
+#                          ^^ constant.character.escape.sosu-locale
