@@ -65,6 +65,6 @@
   "Extern": {
     "prefix": "extern",
     "description": "C functions",
-    "body": ["extern \"C\" {", "\t${1:i32} ${2:puts}(${3:u8* s});", "}"]
+    "body": ["extern \"C\" {", "\t${1:i32} ${2:puts}(${3:ui8* s});", "}"]
   }
 }

@@ -307,7 +307,7 @@ function activate(context) {
     }
     context.subscriptions.push(
         vscode.tasks.registerTaskProvider('sosu', taskProvider),
-        vscode.languages.registerDocumentFormattingEditProvider({ language: 'sosu', scheme: 'file' }, formatter),
+        ...LANGUAGES.map((language) => vscode.languages.registerDocumentFormattingEditProvider({ language, scheme: 'file' }, formatter)),
         vscode.debug.registerDebugConfigurationProvider('sosu', debugProvider),
         vscode.workspace.onDidSaveTextDocument(scheduleCheck),
         vscode.workspace.onDidOpenTextDocument(scheduleCheck),

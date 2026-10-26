@@ -9,6 +9,10 @@ pub struct Point {
 //          ^^^ support.type.primitive.sosu
 //                  ^^^ constant.numeric.float.sosu
 //                        ^^^^^^^^^^^^ comment.line.double-slash.sosu
+    pub mut ui16 r = 1;
+//          ^^^^ support.type.primitive.sosu
+    pub mut uf64 w = 2.0;
+//          ^^^^ support.type.primitive.sosu
 }
     i32 add(i32 a, i32 b) requires a > 0 {
 //  ^^^ support.type.primitive.sosu
