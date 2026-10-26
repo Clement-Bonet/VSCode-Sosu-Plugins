@@ -24,7 +24,7 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
 - **Check on save**, without the language server (setting `sosu.lsp` off, or a `sosuc` without
   it): when a Sosu file is opened or saved, its package is checked (`sosuc check --format=json`),
   and the errors are underlined.
-- **Formatting**: Format Document (`Shift+Alt+F`) runs `sosuc fmt` on `.sosu` files.
+- **Formatting**: Format Document (`Shift+Alt+F`) runs `sosuc fmt` on `.sosu` and `.ui.sosu` files.
 - **Debugging**: `F5` builds the package, then debugs the program with the C debugger of
   VS Code. The C that `sosuc` generates keeps `#line` directives to the `.sosu` files: breakpoints
   are set in the Sosu source, and steps follow it.
@@ -143,7 +143,6 @@ a comment line marks columns with `^` and names the scopes they must have.
 
 - In the language server: renaming, the references of a name, signature help.
 - Variables under their Sosu names in the debugger.
-- A formatter for `.ui.sosu` files, when `sosuc` has one.
 
 ## License
 
