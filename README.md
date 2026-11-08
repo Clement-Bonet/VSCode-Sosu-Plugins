@@ -13,18 +13,27 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
   `match`, `for`, `arena`, `test`, `extern`; `window`, `column`, `button`, `textfield`, `radio`,
   `list`... in `.ui.sosu` files).
 - **Commands** (`Ctrl+Shift+P`, then "Sosu"): Run the program (`Ctrl+F5`, or the run button of
-  the editor), Build the program, Run the tests, Check without compiling. They work on the
-  package of the file being edited: the nearest folder up with a `sosu.toml`.
+  the editor), Build the program, Run the tests, Check without compiling, Generate the
+  documentation. They work on the package of the file being edited: the nearest folder up with
+  a `sosu.toml`. Run, Run the tests, Build and Generate the documentation are also in the menu of
+  a `sosu.toml` in the Explorer.
 - **Tasks**: the same commands as tasks of type `sosu` (Terminal > Run Task), with the problem
   matcher `$sosuc`: the errors of the compiler go to the Problems panel.
 - **Language server** (`sosuc lsp`): the errors while typing, underlined with their help; the type
   of what is under the mouse (signatures of functions and methods, types of variables and
-  fields); go to definition (`F12`, `Ctrl+click`); completion of the members after `.` and of the
-  names in scope. It works on the package of the file, with the text of the open files.
+  fields); go to definition (`F12`, `Ctrl+click`); the references of a name (`Shift+F12`, in
+  every file of the program); rename (`F2`: the declaration and every reference, in every file;
+  a name of `core` or `std`, or a keyword, is refused); completion of the members after `.` and
+  of the names in scope. It works on the package of the file, with the text of the open files.
+  References and rename need a `sosuc` of 0.5 or later.
 - **Check on save**, without the language server (setting `sosu.lsp` off, or a `sosuc` without
   it): when a Sosu file is opened or saved, its package is checked (`sosuc check --format=json`),
   and the errors are underlined.
 - **Formatting**: Format Document (`Shift+Alt+F`) runs `sosuc fmt` on `.sosu` and `.ui.sosu` files.
+  From Sosu 0.5, it breaks the lines longer than 120 characters.
+- **Documentation**: Generate the documentation runs `sosuc doc` on the package (Sosu 0.5 or
+  later) and opens the preview of `build/doc/<name>.md`: its modules, what they make `pub`, and
+  the comments written above it.
 - **Debugging**: `F5` builds the package, then debugs the program with the C debugger of
   VS Code. The C that `sosuc` generates keeps `#line` directives to the `.sosu` files: breakpoints
   are set in the Sosu source, and steps follow it.
@@ -44,7 +53,7 @@ repository (see [Releases](#releases)), from the artifact `sosu-vsix` of a run o
 VS Code: Extensions > `...` > Install from VSIX, or:
 
 ```sh
-code --install-extension sosu-0.1.1.vsix
+code --install-extension sosu-0.2.0.vsix
 ```
 
 ## Releases
@@ -141,7 +150,7 @@ a comment line marks columns with `^` and names the scopes they must have.
 
 ## Next
 
-- In the language server: renaming, the references of a name, signature help.
+- In the language server: signature help.
 - Variables under their Sosu names in the debugger.
 
 ## License
