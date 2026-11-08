@@ -88,7 +88,11 @@ test('the problem matcher reads the text diagnostics of sosuc', () => {
 
 test('every command of the manifest is contributed with a title', () => {
     const commands = pkg.contributes.commands.map((c) => c.command).sort();
-    assert.deepStrictEqual(commands, ['sosu.build', 'sosu.check', 'sosu.run', 'sosu.test']);
+    assert.deepStrictEqual(commands, ['sosu.build', 'sosu.check', 'sosu.doc', 'sosu.run', 'sosu.test']);
+});
+
+test('the documentation of a package is build/doc/<name>.md', () => {
+    assert.strictEqual(sosu.docPath('/p', 'form'), path.join('/p', 'build', 'doc', 'form.md'));
 });
 
 test('the language server is `sosuc lsp`, for Sosu and interface files on disk', () => {
