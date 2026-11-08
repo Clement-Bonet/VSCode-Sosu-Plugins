@@ -216,6 +216,32 @@ async function runCommand(command, uri) {
     vscode.tasks.executeTask(makeTask({ type: 'sosu', command, package: dir }, folder));
 }
 
+// ---- Documentation: `sosuc doc`, then its preview ----
+
+async function generateDoc(uri) {
+    const dir = await currentPackage(uri);
+    if (!dir) return;
+    const manifest = path.join(dir, 'sosu.toml');
+    const name = fs.existsSync(manifest) ? sosu.packageName(fs.readFileSync(manifest, 'utf8')) : null;
+    await vscode.workspace.saveAll(false);
+    const result = await vscode.window.withProgress(
+        { location: vscode.ProgressLocation.Notification, title: `Documenting ${name || path.basename(dir)}...` },
+        () => runSosuc(['doc', dir], dir),
+    );
+    if (result.missing) {
+        warnMissing();
+        return;
+    }
+    const file = name ? sosu.docPath(dir, name) : null;
+    if (result.code !== 0 || !file || !fs.existsSync(file)) {
+        output.appendLine(result.stderr || result.stdout);
+        vscode.window.showErrorMessage('sosuc doc failed (a sosuc older than 0.5 does not have it): see the Sosu output.', 'Show output')
+            .then((choice) => { if (choice) output.show(); });
+        return;
+    }
+    vscode.commands.executeCommand('markdown.showPreview', vscode.Uri.file(file));
+}
+
 // ---- Formatting: `sosuc fmt` on a copy of the document ----
 
 const formatter = {
@@ -305,6 +331,7 @@ function activate(context) {
     for (const command of Object.keys(COMMANDS)) {
         context.subscriptions.push(vscode.commands.registerCommand(`sosu.${command}`, (uri) => runCommand(command, uri)));
     }
+    context.subscriptions.push(vscode.commands.registerCommand('sosu.doc', generateDoc));
     context.subscriptions.push(
         vscode.tasks.registerTaskProvider('sosu', taskProvider),
         ...LANGUAGES.map((language) => vscode.languages.registerDocumentFormattingEditProvider({ language, scheme: 'file' }, formatter)),

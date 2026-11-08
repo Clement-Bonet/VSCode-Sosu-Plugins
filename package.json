@@ -1,8 +1,8 @@
 {
   "name": "sosu",
   "displayName": "Sosu",
-  "description": "The Sosu language: highlighting, errors while typing, hover, go to definition and completion (sosuc lsp), building and running, formatting, debugging.",
-  "version": "0.1.1",
+  "description": "The Sosu language: highlighting, errors while typing, hover, go to definition, references, rename and completion (sosuc lsp), building and running, formatting, documentation, debugging.",
+  "version": "0.2.0",
   "publisher": "clement-bonet",
   "icon": "images/icon.png",
   "license": "MIT OR Apache-2.0",
@@ -59,7 +59,8 @@
       { "command": "sosu.run", "title": "Run the program", "category": "Sosu", "icon": "$(play)" },
       { "command": "sosu.build", "title": "Build the program", "category": "Sosu", "icon": "$(tools)" },
       { "command": "sosu.test", "title": "Run the tests", "category": "Sosu", "icon": "$(beaker)" },
-      { "command": "sosu.check", "title": "Check without compiling", "category": "Sosu", "icon": "$(check)" }
+      { "command": "sosu.check", "title": "Check without compiling", "category": "Sosu", "icon": "$(check)" },
+      { "command": "sosu.doc", "title": "Generate the documentation", "category": "Sosu", "icon": "$(book)" }
     ],
     "menus": {
       "editor/title/run": [
@@ -68,7 +69,8 @@
       "explorer/context": [
         { "command": "sosu.run", "when": "resourceFilename == sosu.toml", "group": "sosu@1" },
         { "command": "sosu.test", "when": "resourceFilename == sosu.toml", "group": "sosu@2" },
-        { "command": "sosu.build", "when": "resourceFilename == sosu.toml", "group": "sosu@3" }
+        { "command": "sosu.build", "when": "resourceFilename == sosu.toml", "group": "sosu@3" },
+        { "command": "sosu.doc", "when": "resourceFilename == sosu.toml", "group": "sosu@4" }
       ]
     },
     "keybindings": [

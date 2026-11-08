@@ -104,6 +104,11 @@ function commandArgs(command, packageDir, options = {}) {
     return args;
 }
 
+// The reference that `sosuc doc` writes for a package: build/doc/<name>.md.
+function docPath(packageDir, name) {
+    return path.join(packageDir, 'build', 'doc', `${name}.md`);
+}
+
 // How the language client starts `sosuc lsp`: the compiler, with SOSU_HOME when it is set.
 function serverOptions(sosucPath, env) {
     return { command: sosucPath, args: ['lsp'], options: { env } };
@@ -123,6 +128,7 @@ module.exports = {
     diagnosticText,
     debuggerConfiguration,
     commandArgs,
+    docPath,
     serverOptions,
     DOCUMENT_SELECTOR,
 };
