@@ -3,6 +3,7 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 
 // The folder of the package that holds `file`: the nearest one up with a sosu.toml, or null.
@@ -109,6 +110,33 @@ function docPath(packageDir, name) {
     return path.join(packageDir, 'build', 'doc', `${name}.md`);
 }
 
+// The places where the installers of Sosu put `sosuc`: install.ps1 and the Windows setup
+// (%LOCALAPPDATA%\Programs\Sosu\bin), install.sh (~/.local/bin, or /usr/local/bin with
+// --prefix), the macOS .pkg (/usr/local/bin) and the .deb (/usr/bin).
+function installedPlaces(platform = process.platform, env = process.env, home = os.homedir()) {
+    if (platform === 'win32') {
+        return env.LOCALAPPDATA ? [path.win32.join(env.LOCALAPPDATA, 'Programs', 'Sosu', 'bin', 'sosuc.exe')] : [];
+    }
+    return [path.posix.join(home, '.local', 'bin', 'sosuc'), '/usr/local/bin/sosuc', '/usr/bin/sosuc'];
+}
+
+// The compiler to run. The setting `sosu.path` when it names one; otherwise `sosuc` from the
+// PATH, or else from where an installer put it: VS Code keeps the PATH it was started with, so
+// a sosuc installed while it was open is not in it.
+function findSosuc(setting, platform = process.platform, env = process.env, exists = fs.existsSync, home = os.homedir()) {
+    if (setting && setting !== 'sosuc') return setting;
+    const name = platform === 'win32' ? 'sosuc.exe' : 'sosuc';
+    const join = platform === 'win32' ? path.win32.join : path.posix.join;
+    const separator = platform === 'win32' ? ';' : ':';
+    for (const dir of (env.PATH || env.Path || '').split(separator)) {
+        if (dir && exists(join(dir, name))) return 'sosuc';
+    }
+    for (const place of installedPlaces(platform, env, home)) {
+        if (exists(place)) return place;
+    }
+    return 'sosuc';
+}
+
 // How the language client starts `sosuc lsp`: the compiler, with SOSU_HOME when it is set.
 function serverOptions(sosucPath, env) {
     return { command: sosucPath, args: ['lsp'], options: { env } };
@@ -129,6 +157,8 @@ module.exports = {
     debuggerConfiguration,
     commandArgs,
     docPath,
+    installedPlaces,
+    findSosuc,
     serverOptions,
     DOCUMENT_SELECTOR,
 };

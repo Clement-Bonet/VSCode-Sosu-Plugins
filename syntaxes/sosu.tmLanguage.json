@@ -15,6 +15,7 @@
         { "include": "#test" },
         { "include": "#type-declaration" },
         { "include": "#function-declaration" },
+        { "include": "#export" },
         { "include": "#keywords" },
         { "include": "#types" },
         { "include": "#constants" },
@@ -87,6 +88,13 @@
         "2": { "name": "string.quoted.double.sosu" }
       }
     },
+    "export": {
+      "match": "\\b(export)\\s+(\"[^\"]*\")",
+      "captures": {
+        "1": { "name": "storage.modifier.export.sosu" },
+        "2": { "name": "string.quoted.double.sosu" }
+      }
+    },
     "test": {
       "match": "^\\s*(test)\\s+(?=\")",
       "captures": { "1": { "name": "keyword.other.test.sosu" } }
@@ -99,10 +107,10 @@
       }
     },
     "function-declaration": {
-      "comment": "`Type name(` at the start of a line, or after `pub`, `virtual`, `override`, `unsafe`: a function or a method",
-      "match": "^\\s*((?:(?:pub|virtual|override|unsafe)\\s+)*)(?!(?:return|if|else|while|for|match|defer|try|in|as|import|extern|test)\\b)([A-Za-z_][A-Za-z0-9_.]*(?:\\[[0-9]*\\]|[*?])*(?:![A-Za-z_][A-Za-z0-9_.]*)?)\\s+(?!(?:if|while|for|match|in|as)\\b)([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()",
+      "comment": "`Type name(` at the start of a line, or after `pub`, `virtual`, `override`, `unsafe`, `export \"C\"`: a function or a method",
+      "match": "^\\s*((?:(?:pub|virtual|override|unsafe|export\\s+\"[^\"]*\")\\s+)*)(?!(?:return|if|else|while|for|match|defer|try|in|as|import|extern|test)\\b)([A-Za-z_][A-Za-z0-9_.]*(?:\\[[0-9]*\\]|[*?])*(?:![A-Za-z_][A-Za-z0-9_.]*)?)\\s+(?!(?:if|while|for|match|in|as)\\b)([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()",
       "captures": {
-        "1": { "patterns": [{ "include": "#keywords" }] },
+        "1": { "patterns": [{ "include": "#export" }, { "include": "#keywords" }] },
         "2": { "patterns": [{ "include": "#types" }, { "include": "#type-names" }, { "include": "#punctuation" }] },
         "3": { "name": "entity.name.function.sosu" }
       }
@@ -111,7 +119,7 @@
       "patterns": [
         { "name": "keyword.control.sosu", "match": "\\b(if|else|while|for|in|break|continue|return|match|try|defer)\\b" },
         { "name": "keyword.other.contract.sosu", "match": "\\b(requires|ensures|uses)\\b" },
-        { "name": "storage.modifier.sosu", "match": "\\b(pub|mut|virtual|override|unsafe|extern)\\b" },
+        { "name": "storage.modifier.sosu", "match": "\\b(pub|mut|virtual|override|unsafe|extern|keeps)\\b" },
         { "name": "storage.type.sosu", "match": "\\b(struct|class|interface|enum|auto|fn)\\b" },
         { "name": "keyword.operator.cast.sosu", "match": "\\bas\\?|\\bas\\b" },
         { "name": "variable.language.sosu", "match": "\\b(self|base)\\b" },

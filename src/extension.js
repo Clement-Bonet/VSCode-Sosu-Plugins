@@ -20,7 +20,7 @@ function settings() {
 }
 
 function sosucPath() {
-    return settings().get('path') || 'sosuc';
+    return sosu.findSosuc(settings().get('path'));
 }
 
 // The environment of sosuc: SOSU_HOME when the setting gives it.
