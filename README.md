@@ -23,9 +23,14 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
   of what is under the mouse (signatures of functions and methods, types of variables and
   fields); go to definition (`F12`, `Ctrl+click`); the references of a name (`Shift+F12`, in
   every file of the program); rename (`F2`: the declaration and every reference, in every file;
-  a name of `core` or `std`, or a keyword, is refused); completion of the members after `.` and
-  of the names in scope. It works on the package of the file, with the text of the open files.
-  References and rename need a `sosuc` of 0.5 or later.
+  a keyword, a name of `core` or `std` or a module is refused before you type, and so is a new
+  name that would change the program: one already declared there, or one that would hide another
+  name or be hidden by it); completion of the members after `.` and of the names in scope;
+  signature help (the parameters of the function being called, and the one being written, as
+  you type `(` and `,`); the outline of the file (the Outline view, the breadcrumbs, Go to Symbol
+  in Editor with `Ctrl+Shift+O`). It works on the package of the file, with the text of the open
+  files. References and rename need a `sosuc` of 0.5 or later; signature help, the outline and
+  the checks before a rename, Sosu 0.6 or later.
 - **Check on save**, without the language server (setting `sosu.lsp` off, or a `sosuc` without
   it): when a Sosu file is opened or saved, its package is checked (`sosuc check --format=json`),
   and the errors are underlined.
@@ -40,8 +45,13 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
 
 ## Requirements
 
-- `sosuc`, built from the Sosu repository (`build.bat` on Windows, `make` elsewhere). If it is not
-  in the `PATH`, give its full path in the setting `sosu.path`.
+- `sosuc`, from the installers of Sosu (`install.ps1`, `install.sh`, the Windows setup, the `.deb`
+  or the macOS `.pkg`: see its [releases](https://github.com/Clement-Bonet/Sosu/releases)), or
+  built from the Sosu repository (`build.bat` on Windows, `make` elsewhere). The extension runs
+  the `sosuc` of the `PATH`; when there is none, as in a VS Code started before the installation,
+  it looks where the installers put it: `%LOCALAPPDATA%\Programs\Sosu\bin` on Windows,
+  `~/.local/bin`, `/usr/local/bin` and `/usr/bin` elsewhere. Any other place goes in the setting
+  `sosu.path`.
 - For debugging: the [C/C++ extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
   of Microsoft. It debugs with MSVC (`cppvsdbg`) on Windows, gdb on Linux and lldb on macOS.
 
@@ -53,7 +63,7 @@ repository (see [Releases](#releases)), from the artifact `sosu-vsix` of a run o
 VS Code: Extensions > `...` > Install from VSIX, or:
 
 ```sh
-code --install-extension sosu-0.2.0.vsix
+code --install-extension sosu-0.3.0.vsix
 ```
 
 ## Releases
@@ -113,9 +123,15 @@ language server command). Its one runtime dependency, `vscode-languageclient`, i
 
 ```sh
 npm install
-npm test          # node --test (src/sosu.js), and the highlighting tests of test/grammar
+npm test          # node --test (src/sosu.js, a session with sosuc lsp), and the highlighting tests
 npm run package   # sosu-<version>.vsix
 ```
+
+`test/lsp.test.js` holds a session of the language protocol with `sosuc lsp` on the package
+`test/lsp/hello`: diagnostics, hover, definition, references, rename, and what the server offers
+beyond them. It runs the `sosuc` that the extension would find, or `$SOSUC`, and is skipped
+without one (the CI sets `SOSU_LSP_TEST=required`, after installing the latest `sosuc` with
+`install.sh`).
 
 To try it in VS Code: open this folder and run "Run Extension" (F5), or install the `.vsix`.
 Without Node.js installed, the same commands run in Docker, from the folder of the extension.
@@ -148,9 +164,30 @@ a comment line marks columns with `^` and names the scopes they must have.
 - `feature/<name>`: one branch per feature, created from `dev` and merged back into `dev`
   through a pull request, checked by the CI (`.github/workflows/ci.yml`).
 
+## Publishing
+
+The extension goes on the Visual Studio Marketplace and on Open VSX (for VSCodium, Cursor and
+the other editors built on VS Code) when Sosu launches, at 1.0. Until then the workflow `Publish`
+(`.github/workflows/publish.yml`) refuses a version below 1.0.0. What is to be done once:
+
+1. **Marketplace**: sign in to <https://marketplace.visualstudio.com/manage> with a Microsoft
+   account and create the publisher `clement-bonet` (the `publisher` of `package.json`). In
+   Azure DevOps (<https://dev.azure.com>), create a personal access token for all accessible
+   organizations, with the scope Marketplace > Manage, and save it as the secret `VSCE_PAT` of
+   the repository (Settings > Secrets and variables > Actions).
+2. **Open VSX**: sign in to <https://open-vsx.org> with GitHub, sign the publisher agreement of
+   the Eclipse Foundation in the profile, create an access token, and save it as the secret
+   `OVSX_PAT`. Then create the namespace once: `npx ovsx create-namespace clement-bonet -p <token>`.
+3. **Each version**: set `version` in `package.json` (1.0.0 or later) and add its entry to
+   `CHANGELOG.md`, merge it into `main`, then Actions > Publish > Run workflow on `main`. It runs
+   the tests, builds the `.vsix` and publishes it on both, or on the one picked. The release on
+   GitHub stays the workflow `Release`, on the tag of the version.
+
+Both stores show this README, `CHANGELOG.md` and the icon. A version is published once: a fix is
+a new version.
+
 ## Next
 
-- In the language server: signature help.
 - Variables under their Sosu names in the debugger.
 
 ## License

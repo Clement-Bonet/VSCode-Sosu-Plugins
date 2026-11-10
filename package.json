@@ -1,8 +1,8 @@
 {
   "name": "sosu",
   "displayName": "Sosu",
-  "description": "The Sosu language: highlighting, errors while typing, hover, go to definition, references, rename and completion (sosuc lsp), building and running, formatting, documentation, debugging.",
-  "version": "0.2.0",
+  "description": "The Sosu language: highlighting, errors while typing, hover, go to definition, references, rename, completion, signature help and the outline (sosuc lsp), building and running, formatting, documentation, debugging.",
+  "version": "0.3.0",
   "publisher": "clement-bonet",
   "icon": "images/icon.png",
   "license": "MIT OR Apache-2.0",
@@ -11,6 +11,10 @@
     "type": "git",
     "url": "https://github.com/Clement-Bonet/VSCode-Sosu-Plugins.git"
   },
+  "bugs": {
+    "url": "https://github.com/Clement-Bonet/VSCode-Sosu-Plugins/issues"
+  },
+  "homepage": "https://github.com/Clement-Bonet/VSCode-Sosu-Plugins#readme",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -82,7 +86,7 @@
         "sosu.path": {
           "type": "string",
           "default": "sosuc",
-          "markdownDescription": "The compiler: `sosuc` in the `PATH`, or its full path (`D:/Sosu/build/sosuc.exe`)."
+          "markdownDescription": "The compiler: `sosuc` in the `PATH` (or else where the installers of Sosu put it), or its full path (`D:/Sosu/build/sosuc.exe`)."
         },
         "sosu.home": {
           "type": "string",
@@ -92,7 +96,7 @@
         "sosu.lsp": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Use the language server of the compiler (`sosuc lsp`): errors while typing, types on hover, go to definition, completion. Off, or when `sosuc` has no language server: `#sosu.checkOnSave#`."
+          "markdownDescription": "Use the language server of the compiler (`sosuc lsp`): errors while typing, types on hover, go to definition, references, rename, completion, signature help, the outline. Off, or when `sosuc` has no language server: `#sosu.checkOnSave#`."
         },
         "sosu.checkOnSave": {
           "type": "boolean",
@@ -165,14 +169,15 @@
     ]
   },
   "scripts": {
-    "test": "node --test test/sosu.test.js && vscode-tmgrammar-test \"test/grammar/*.sosu\"",
-    "package": "vsce package --skip-license"
+    "test": "node --test test/sosu.test.js test/lsp.test.js && vscode-tmgrammar-test \"test/grammar/*.sosu\"",
+    "package": "vsce package"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.2.1",
+    "ovsx": "^1.4.0",
     "vscode-tmgrammar-test": "^0.1.3"
   }
 }

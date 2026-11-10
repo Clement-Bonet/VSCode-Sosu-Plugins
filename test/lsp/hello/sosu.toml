@@ -1,0 +1,4 @@
+# The package that test/lsp.test.js opens with `sosuc lsp`.
+[package]
+name = "hello"
+version = "0.1.0"

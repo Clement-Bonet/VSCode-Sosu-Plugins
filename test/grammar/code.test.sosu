@@ -53,3 +53,10 @@ pub struct Point {
 //      ^^^^^^^^^^^^^ comment.block.sosu
 //                      ^^ keyword.operator.assignment.compound.sosu
     }
+export "C" f32 geom_dot(Vec2 a, keeps Node* n) {
+// <------ storage.modifier.export.sosu
+//     ^^^ string.quoted.double.sosu
+//         ^^^ support.type.primitive.sosu
+//             ^^^^^^^^ entity.name.function.sosu
+//                              ^^^^^ storage.modifier.sosu
+}
