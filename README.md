@@ -30,7 +30,7 @@ The Visual Studio Code extension for [Sosu](https://github.com/Clement-Bonet/Sos
   you type `(` and `,`); the outline of the file (the Outline view, the breadcrumbs, Go to Symbol
   in Editor with `Ctrl+Shift+O`). It works on the package of the file, with the text of the open
   files. References and rename need a `sosuc` of 0.5 or later; signature help, the outline and
-  the checks before a rename, a `sosuc` later than 0.5.4.
+  the checks before a rename, Sosu 0.6 or later.
 - **Check on save**, without the language server (setting `sosu.lsp` off, or a `sosuc` without
   it): when a Sosu file is opened or saved, its package is checked (`sosuc check --format=json`),
   and the errors are underlined.

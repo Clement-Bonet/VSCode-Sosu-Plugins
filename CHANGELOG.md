@@ -7,14 +7,14 @@ works with a `sosuc` that has it, and is simply missing with an older one.
 
 - Outline: the declarations of a file (functions, types and their fields, methods and variants,
   constants, tests) in the Outline view, the breadcrumbs and Go to Symbol in Editor
-  (`Ctrl+Shift+O`). With a `sosuc` later than 0.5.4.
+  (`Ctrl+Shift+O`). With Sosu 0.6 or later.
 - Signature help: the parameters of the function or method being called, and the one being
-  written, as you type `(` and `,`. With a `sosuc` later than 0.5.4.
+  written, as you type `(` and `,`. With Sosu 0.6 or later.
 - Rename (`F2`) tells at once when a name cannot be renamed (a keyword, a name of `core` or
   `std`, a module), and refuses a new name that would change the program: one already declared
-  there, or one that would hide another name or be hidden by it. With a `sosuc` later than 0.5.4.
+  there, or one that would hide another name or be hidden by it. With Sosu 0.6 or later.
 - References and rename on a program that does not load say so, instead of finding nothing.
-  With a `sosuc` later than 0.5.4.
+  With Sosu 0.6 or later.
 - `sosuc` is also found where the installers of Sosu put it (`%LOCALAPPDATA%\Programs\Sosu\bin`,
   `~/.local/bin`, `/usr/local/bin`, `/usr/bin`) when it is not in the `PATH` of VS Code: VS Code
   keeps the `PATH` it was started with.
