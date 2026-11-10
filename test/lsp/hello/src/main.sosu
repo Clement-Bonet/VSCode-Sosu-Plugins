@@ -1,0 +1,11 @@
+import std.io;
+
+i32 twice(i32 value) {
+    return value * 2;
+}
+
+i32 main() uses io {
+    i32 count = twice(2);
+    io.print("{}", count);
+    return count - 4;
+}

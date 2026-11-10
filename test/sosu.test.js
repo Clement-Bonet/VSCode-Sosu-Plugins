@@ -95,6 +95,22 @@ test('the documentation of a package is build/doc/<name>.md', () => {
     assert.strictEqual(sosu.docPath('/p', 'form'), path.join('/p', 'build', 'doc', 'form.md'));
 });
 
+test('sosuc: the setting, else the PATH, else where an installer put it', () => {
+    const none = () => false;
+    assert.strictEqual(sosu.findSosuc('D:/Sosu/build/sosuc.exe', 'win32', {}, none), 'D:/Sosu/build/sosuc.exe');
+    const windows = { PATH: 'C:\\Windows;C:\\Tools', LOCALAPPDATA: 'C:\\Users\\ada\\AppData\\Local' };
+    const installed = 'C:\\Users\\ada\\AppData\\Local\\Programs\\Sosu\\bin\\sosuc.exe';
+    assert.strictEqual(sosu.findSosuc('sosuc', 'win32', windows, (f) => f === 'C:\\Tools\\sosuc.exe'), 'sosuc');
+    assert.strictEqual(sosu.findSosuc('sosuc', 'win32', windows, (f) => f === installed), installed);
+    assert.strictEqual(sosu.findSosuc('', 'win32', windows, none), 'sosuc');
+    const linux = { PATH: '/usr/bin:/bin' };
+    assert.strictEqual(sosu.findSosuc('sosuc', 'linux', linux, (f) => f === '/home/ada/.local/bin/sosuc', '/home/ada'),
+        '/home/ada/.local/bin/sosuc');
+    assert.strictEqual(sosu.findSosuc('sosuc', 'darwin', {}, (f) => f === '/usr/local/bin/sosuc', '/Users/ada'), '/usr/local/bin/sosuc');
+    assert.deepStrictEqual(sosu.installedPlaces('linux', {}, '/home/ada'),
+        ['/home/ada/.local/bin/sosuc', '/usr/local/bin/sosuc', '/usr/bin/sosuc']);
+});
+
 test('the language server is `sosuc lsp`, for Sosu and interface files on disk', () => {
     const env = { SOSU_HOME: '/opt/sosu' };
     assert.deepStrictEqual(sosu.serverOptions('/bin/sosuc', env), { command: '/bin/sosuc', args: ['lsp'], options: { env } });

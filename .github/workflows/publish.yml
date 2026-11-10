@@ -1,0 +1,67 @@
+name: Publish
+
+# Publishes the extension on the Visual Studio Marketplace and on Open VSX (for VSCodium,
+# Cursor and the other editors built on VS Code). By hand only: Actions > Publish > Run workflow,
+# on `main`. Sosu launches at 1.0, so a version below 1.0.0 stops the workflow before anything is
+# published.
+#
+# It needs, once, in Settings > Secrets and variables > Actions of the repository:
+# - VSCE_PAT: a token of Azure DevOps (scope Marketplace > Manage) of the publisher
+#   `clement-bonet` of the Marketplace;
+# - OVSX_PAT: a token of open-vsx.org, whose namespace `clement-bonet` belongs to the account.
+# The steps are in README.md (Publishing).
+on:
+  workflow_dispatch:
+    inputs:
+      where:
+        description: "Where to publish"
+        type: choice
+        options: [both, marketplace, open-vsx]
+        default: both
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish the .vsix
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Only from 1.0.0, on main
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "main" ]; then
+            echo "::error::Publish from main, not from $GITHUB_REF_NAME."
+            exit 1
+          fi
+          case "$version" in
+            0.*) echo "::error::Version $version: the extension is published from 1.0.0, when Sosu launches."
+                 exit 1 ;;
+          esac
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Install sosuc
+        run: curl -fsSL https://github.com/Clement-Bonet/Sosu/releases/latest/download/install.sh | sh
+      - name: Tests (logic, sosuc lsp and highlighting)
+        run: SOSUC="$HOME/.local/bin/sosuc" SOSU_LSP_TEST=required npm test
+      - name: Package
+        run: npm run package
+
+      - name: Visual Studio Marketplace
+        if: inputs.where != 'open-vsx'
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish --packagePath "sosu-$VERSION.vsix"
+      - name: Open VSX
+        if: inputs.where != 'marketplace'
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx ovsx publish "sosu-$VERSION.vsix"

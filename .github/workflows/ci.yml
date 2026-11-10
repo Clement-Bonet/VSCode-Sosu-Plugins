@@ -24,8 +24,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Tests (logic and highlighting)
-        run: npm test
+      # the latest release of Sosu, for the session with sosuc lsp (test/lsp.test.js)
+      - name: Install sosuc
+        run: curl -fsSL https://github.com/Clement-Bonet/Sosu/releases/latest/download/install.sh | sh
+      - name: Tests (logic, sosuc lsp and highlighting)
+        run: SOSUC="$HOME/.local/bin/sosuc" SOSU_LSP_TEST=required npm test
       - name: Package
         run: npm run package
       - uses: actions/upload-artifact@v7
